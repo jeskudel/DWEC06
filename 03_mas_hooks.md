@@ -181,3 +181,74 @@ Cuando hacemos clic en el botón "Alternar estado", el componente de la aplicaci
 
 ## Custom hooks
 
+Los **custom hooks** en React son un tipo de función JavaScript que simula el funcionamiento de los hooks en React. Son muy útiles siempre que tengamos una lógica que se repite entre varios componentes. En estos casos, podemos sacar esta lógica y aplicarla a un **custom hook**, es decir, una función que ejecute los pasos que necesitamos de manera automática.
+
+Al no ser funciones cualquiera, los custom hooks deben seguir una serie de reglas para ser considerados hooks y no funciones:
+
+* La primera regla de los custom hooks en React es que su nombre debe empezar con la palabra `use`. Esta convención se crea siguiendo los hooks originales de React (`useEffect`, `useState`, `useRef`). Se considera que esto es una regla porque la comunidad ha decidido que es más sencillo reconocer un custom hook cuando sigue esta norma. Sin embargo, en teoría podrías crear uno con otro nombre. 
+
+* Lo que realmente tienen de particular los custom hooks  es que pueden **llamar** a otros hooks. En este orden de ideas, React considera como custom hook a aquella función que dentro llama a un hook original o a otro custom hook. 
+
+Aqui tenemos un ejemplo de `custoHook` que acepta una *URL* de API como argumento. Se utiliza `useState` y `useEffect` para manejar el estado de los datos, la carga y los errores que se presenten.
+
+```jsx
+import { useState, useEffect } from 'react';
+
+function useApi(apiUrl) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.json();
+      setData(result);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [apiUrl]);
+
+  return { data, loading, error };
+}
+
+export default useApi;
+```
+En `useEffect`, se llama a `fetchData()` La lógica de la solicitud y el manejo de errores se encuentran en la función `fetchData`, lo que hace que el código sea más claro y modular.
+
+`ApiComponent` utiliza `useApi` para obtener y mostrar los datos de la API. Mientras se carga la solicitud, muestra un mensaje de **“Cargando…”**. Si hay un error, muestra un mensaje de error. Si la solicitud se realiza con éxito, muestra los datos obtenidos de la API.
+
+```jsx
+import useApi from '../hooks/useApi';
+
+function ApiComponent() {
+  const apiUrl = 'https://jsonplaceholder.typicode.com/todos/1';
+  const { data, loading, error } = useApi(apiUrl);
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <div>
+      <h1>Data from API</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+}
+
+export default ApiComponent;
+```
