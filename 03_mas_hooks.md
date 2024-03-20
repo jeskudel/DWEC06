@@ -252,3 +252,11 @@ function ApiComponent() {
 
 export default ApiComponent;
 ```
+
+Os dejo otro video del bueno de "Midudev" que lo explica con otro ejemplo para que lo podais entender mejor.
+
+<p align="center"> 
+<a href="https://www.youtube.com/watch?v=K4vCTeKKCkU">
+<img src="./img/video_customHook.jpg" width="60%" height="60%" style="display: block; margin: 0 auto" />
+</a>
+</p>
