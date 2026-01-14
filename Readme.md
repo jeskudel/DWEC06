@@ -3,7 +3,6 @@ Apuntes del módulo de DWEC del ciclo de grado superior de DAW.
 
 ### ÍNDICE
 
-* [Manejando eventos en React](./00_eventos.md)
 * [El Hook useEffect](./01_useEffect.md)
 * [El Hook useRef](./02_useRef.md)
 * [Otros hooks interesantes](./03_mas_hooks.md)
